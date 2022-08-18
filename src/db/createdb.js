@@ -6,7 +6,7 @@ import {createDBConnection, query} from "../modules/postgres.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const configFile = path.resolve(path.dirname(__dirname), "config.json")
 
-globalThis.config = fs.readFileSync(configFile)
+globalThis.config = JSON.parse(fs.readFileSync(configFile, 'utf-8'))
 
 const files = [
     'tables', 'indexes', 'procedures', 'triggers', 'data'

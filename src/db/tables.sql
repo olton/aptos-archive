@@ -30,9 +30,7 @@ create table counters
 
 create table user_transactions
 (
-    id                        bigint    default 0                 not null
-        constraint user_transactions_pk
-            primary key,
+    id                        bigint    default 0                 not null,
     changes                   json,
     sender                    varchar                             not null,
     sequence_number           bigint    default 0,

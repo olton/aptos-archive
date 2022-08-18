@@ -152,7 +152,7 @@ export const saveMetaTransaction = async (id, data) => {
         ON CONFLICT DO NOTHING
     `
     const {
-        tr_id, epoch, round, proposer, timestamp, changes, events, previous_block_votes, failed_proposer_indices
+        id: tr_id, epoch, round, proposer, timestamp, changes, events, previous_block_votes, failed_proposer_indices
     } = data
 
     await query(sql, [
