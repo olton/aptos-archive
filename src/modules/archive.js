@@ -136,9 +136,9 @@ export const saveUserTransaction = async (id, data) => {
             datetime(+timestamp / 1000).format("YYYY-MM-DD HH:mm:ss")
         ])
 
-        await saveUserPayload(id, payload)
-        await saveUserChanges(id, changes)
-        await saveUserEvents(id, events)
+        await savePayload(id, payload)
+        await saveChanges(id, changes)
+        await saveEvents(id, events)
     } catch (e) {
         console.log(e.message)
     }
@@ -168,17 +168,39 @@ export const saveMetaTransaction = async (id, data) => {
         JSON.stringify(failed_proposer_indices)
     ])
 
-    await saveMetaChanges(id, changes)
-    await saveMetaEvents(id, events)
+    await saveChanges(id, changes)
+    await saveEvents(id, events)
 }
 
-export const saveUserPayload = async (id, data) => {
+export const savePayload = async (id, data) => {
+    const sql = `
+        insert into payloads(id, function, type_arguments, arguments, type)
+        values($1, $2, $3, $4, $5)
+    `
 
+    await query(sql, [id, data.function, JSON.stringify(data.type_arguments), JSON.stringify(data.arguments), data.type])
 }
-export const saveUserChanges = async (id, data) => {}
-export const saveUserEvents = async (id, data) => {}
-export const saveMetaChanges = async (id, data) => {}
-export const saveMetaEvents = async (id, data) => {}
+
+export const saveChanges = async (id, data) => {
+    const sql = `
+        insert into changes(id, address, state_key_hash, data, type)
+        values($1, $2, $3, $4, $5)
+    `
+
+    for (let c of data) {
+        await query(sql, [id, c.address, c.state_key_hash, JSON.stringify(c.data), c.type])
+    }
+}
+
+export const saveEvents = async (id, data) => {
+    const sql = `
+        insert into events(id, key, sequence_number, type, data)
+        values($1, $2, $3, $4, $5)
+    `
+    for (let e of data) {
+        await query(sql, [id, e.key, e.sequence_number, e.type, JSON.stringify(e.data)])
+    }
+}
 
 export const processTransaction = async (data) => {
     const id = await saveTransaction(data)
