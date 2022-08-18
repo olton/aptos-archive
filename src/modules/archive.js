@@ -79,6 +79,7 @@ export const saveTransaction = async (data) => {
             hash, type, version, status, status_message, timestamp, 
             gas_used, state_root_hash, event_root_hash, accumulator_root_hash)
         values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)    
+        ON CONFLICT DO NOTHING
         RETURNING *    
    `
 
@@ -101,32 +102,46 @@ export const saveTransaction = async (data) => {
 export const saveUserTransaction = async (id, data) => {
     const sql = `
         insert into user_transactions(
-            id, changes, sender, sequence_number, max_gas_amount, gas_unit_price, 
-            expiration_timestamp_secs, payload, signature, events, timestamp)
+            id, 
+            sender, 
+            sequence_number, 
+            max_gas_amount, 
+            gas_unit_price, 
+            expiration_timestamp_secs, 
+            payload, 
+            changes, 
+            signature, 
+            events, 
+            timestamp)
         values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        ON CONFLICT DO NOTHING
     `
     const {
         changes, sender, sequence_number, max_gas_amount, gas_unit_price,
         expiration_timestamp_secs, payload, signature, events, timestamp
     } = data
 
-    await query(sql, [
-        id,
-        changes,
-        sender,
-        sequence_number,
-        max_gas_amount,
-        gas_unit_price,
-        expiration_timestamp_secs,
-        payload,
-        signature,
-        events,
-        datetime(+timestamp/1000).format("YYYY-MM-DD HH:mm:ss")
-    ])
+    try {
+        await query(sql, [
+            id,
+            sender,
+            +sequence_number,
+            +max_gas_amount,
+            +gas_unit_price,
+            +expiration_timestamp_secs,
+            JSON.stringify(payload),
+            JSON.stringify(changes),
+            JSON.stringify(signature),
+            JSON.stringify(events),
+            datetime(+timestamp / 1000).format("YYYY-MM-DD HH:mm:ss")
+        ])
 
-    await saveUserPayload(id, payload)
-    await saveUserChanges(id, changes)
-    await saveUserEvents(id, events)
+        await saveUserPayload(id, payload)
+        await saveUserChanges(id, changes)
+        await saveUserEvents(id, events)
+    } catch (e) {
+        console.log(e.message)
+    }
 }
 
 export const saveMetaTransaction = async (id, data) => {
@@ -134,6 +149,7 @@ export const saveMetaTransaction = async (id, data) => {
         insert into meta_transactions(
             id, tr_id, epoch, round, proposer, timestamp, changes, events, previous_block_votes, failed_proposer_indices)
         values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        ON CONFLICT DO NOTHING
     `
     const {
         tr_id, epoch, round, proposer, timestamp, changes, events, previous_block_votes, failed_proposer_indices
@@ -146,17 +162,19 @@ export const saveMetaTransaction = async (id, data) => {
         round,
         proposer,
         datetime(+timestamp/1000).format("YYYY-MM-DD HH:mm:ss"),
-        changes,
-        events,
-        previous_block_votes,
-        failed_proposer_indices
+        JSON.stringify(changes),
+        JSON.stringify(events),
+        JSON.stringify(previous_block_votes),
+        JSON.stringify(failed_proposer_indices)
     ])
 
     await saveMetaChanges(id, changes)
     await saveMetaEvents(id, events)
 }
 
-export const saveUserPayload = async (id, data) => {}
+export const saveUserPayload = async (id, data) => {
+
+}
 export const saveUserChanges = async (id, data) => {}
 export const saveUserEvents = async (id, data) => {}
 export const saveMetaChanges = async (id, data) => {}
@@ -166,11 +184,11 @@ export const processTransaction = async (data) => {
     const id = await saveTransaction(data)
 
     if (data.type === 'user_transaction') {
-        // await saveUserTransaction(id, data)
+        await saveUserTransaction(id, data)
     }
 
     if (data.type === 'block_metadata_transaction') {
-        // await saveMetaTransaction(id, data)
+        await saveMetaTransaction(id, data)
     }
 }
 
