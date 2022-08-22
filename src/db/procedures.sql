@@ -2,12 +2,8 @@ create function counter_reset_trigger() returns trigger
     language plpgsql
 as
 $$
-DECLARE
-	tableCounters text;
 BEGIN
-	tableCounters := 'counters';
-
-	EXECUTE 'update ' || tableCounters || ' set counter_value = 0';
+	EXECUTE 'update counters set counter_value = 0';
 END
 $$;
 
@@ -15,23 +11,23 @@ create function counter_update_trigger() returns trigger
     language plpgsql
 as
 $$
-DECLARE
-	tableCounters text;
 BEGIN
-	tableCounters := 'counters';
-
 	IF TG_OP = 'INSERT' THEN
-	    EXECUTE 'update ' || tableCounters || ' set counter_value = counter_value + 1 where type = $1'
+	    EXECUTE 'update counters set counter_value = counter_value + 1 where type = $1'
         USING NEW.type;
 
         if (NEW.success = true) then
-            EXECUTE 'update ' || tableCounters || ' set counter_value = counter_value + 1 where type = $1'
+            EXECUTE 'update counters set counter_value = counter_value + 1 where type = $1'
             USING 'success_transaction';
         elseif (NEW.success = false) then
-            EXECUTE 'update ' || tableCounters || ' set counter_value = counter_value + 1 where type = $1'
+            EXECUTE 'update counters set counter_value = counter_value + 1 where type = $1'
             USING 'failed_transaction';
         end if;
 
+	    if (NEW.gas_used::bigint > 0) then
+            execute 'insert into gas_used(function, gas) values($1, $2)'
+	        using NEW.payload->>'function', NEW.gas_used;
+        end if;
 		RETURN NEW;
 	END IF;
 END

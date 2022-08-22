@@ -1,6 +1,7 @@
-import {query} from "./postgres.js";
+import {beginTransaction, commitTransaction, getClient, query, releaseClient, rollbackTransaction} from "./postgres.js";
 import {datetime} from "@olton/datetime";
 import {sleep} from "../helpers/sleep.js";
+import {error, info} from "../helpers/logging.js";
 
 const TRANS_TYPES = {
     'user_transaction': 'user',
@@ -23,6 +24,7 @@ export const updateLedgerStatus = async () => {
                 epoch = $3, 
                 timestamp = $4,
                 block_height = $5 
+            where true
         `
         await query(sql, [+chain_id, +ledger_version, +epoch, datetime(+ledger_timestamp/1000).format("YYYY-MM-DD HH:mm:ss"), +block_height])
         setTimeout(updateLedgerStatus, 1_000)
@@ -44,59 +46,64 @@ export const getLastVersion = async () => {
     `
 
     try {
-        const result = (await query(sql)).rows[0]
-        return result.version
+        return (await query(sql)).rows[0]
     } catch (e) {
-        return 0
+        throw new Error(`getLastVersion --> ${e.message}`)
     }
 }
 
 export const setLastVersion = async (version) => {
     const sql = `
         update archive_status
-        set version = $1 
+        set version = $1, timestamp = current_timestamp where true
     `
 
     return (await query(sql, [version]))
 }
 
 export const saveTransaction = async (data) => {
-    const {
-        hash,
-        type,
-        version,
-        success,
-        vm_status,
-        timestamp,
-        gas_used,
-        state_root_hash,
-        event_root_hash,
-        accumulator_root_hash,
-    } = data
-
     const sql = `
-        insert into transactions(
-            hash, type, version, status, status_message, timestamp, 
-            gas_used, state_root_hash, event_root_hash, accumulator_root_hash)
-        values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)    
+        insert into transactions (
+            hash, 
+            type, 
+            version, 
+            success, 
+            vm_status, 
+            timestamp, 
+            gas_used, 
+            state_root_hash, 
+            event_root_hash, 
+            accumulator_root_hash,
+            payload,
+            events,
+            changes
+            )
+        values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)    
         ON CONFLICT DO NOTHING
         RETURNING *    
-   `
+    `
 
-    const result = await query(sql, [
-        hash,
-        TRANS_TYPES[type],
-        version,
-        success,
-        vm_status,
-        datetime(+timestamp/1000).format("YYYY-MM-DD HH:mm:ss"),
-        gas_used,
-        state_root_hash,
-        event_root_hash,
-        accumulator_root_hash
-    ])
+    try {
+        const result = await query(sql, [
+            data.hash,
+            TRANS_TYPES[data.type],
+            data.version,
+            data.success,
+            data.vm_status,
+            data.timestamp ? datetime(+data.timestamp / 1000).format("YYYY-MM-DD HH:mm:ss") : null,
+            data.gas_used,
+            data.state_root_hash,
+            data.event_root_hash,
+            data.accumulator_root_hash,
+            data.payload ? JSON.stringify(data.payload) : null,
+            data.events ? JSON.stringify(data.events) : null,
+            data.changes ? JSON.stringify(data.changes) : null
+        ])
 
-    return result.rows[0].id
+        return result.rows[0].id
+    } catch (e) {
+        throw new Error("saveTransaction --> "+e.message)
+    }
 }
 
 export const saveUserTransaction = async (id, data) => {
@@ -108,37 +115,27 @@ export const saveUserTransaction = async (id, data) => {
             max_gas_amount, 
             gas_unit_price, 
             expiration_timestamp_secs, 
-            payload, 
-            changes, 
             signature, 
-            events, 
             timestamp)
-        values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        values($1, $2, $3, $4, $5, $6, $7, $8)
         ON CONFLICT DO NOTHING
     `
-    const {
-        changes, sender, sequence_number, max_gas_amount, gas_unit_price,
-        expiration_timestamp_secs, payload, signature, events, timestamp
-    } = data
 
     try {
         await query(sql, [
             id,
-            sender,
-            +sequence_number,
-            +max_gas_amount,
-            +gas_unit_price,
-            +expiration_timestamp_secs,
-            JSON.stringify(payload),
-            JSON.stringify(changes),
-            JSON.stringify(signature),
-            JSON.stringify(events),
-            datetime(+timestamp / 1000).format("YYYY-MM-DD HH:mm:ss")
+            data.sender,
+            +data.sequence_number,
+            +data.max_gas_amount,
+            +data.gas_unit_price,
+            +data.expiration_timestamp_secs,
+            JSON.stringify(data.signature),
+            datetime(+data.timestamp / 1000).format("YYYY-MM-DD HH:mm:ss")
         ])
 
-        await savePayload(id, payload)
-        await saveChanges(id, changes)
-        await saveEvents(id, events)
+        await savePayload(id, data.payload)
+        await saveChanges(id, data.changes)
+        await saveEvents (id, data.events)
     } catch (e) {
         console.log(e.message)
     }
@@ -147,29 +144,31 @@ export const saveUserTransaction = async (id, data) => {
 export const saveMetaTransaction = async (id, data) => {
     const sql = `
         insert into meta_transactions(
-            id, tr_id, epoch, round, proposer, timestamp, changes, events, previous_block_votes, failed_proposer_indices)
-        values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            id, 
+            tr_id,
+            epoch, 
+            round, 
+            proposer, 
+            timestamp, 
+            previous_block_votes, 
+            failed_proposer_indices
+            )
+        values($1, $2, $3, $4, $5, $6, $7, $8)
         ON CONFLICT DO NOTHING
     `
-    const {
-        id: tr_id, epoch, round, proposer, timestamp, changes, events, previous_block_votes, failed_proposer_indices
-    } = data
-
     await query(sql, [
         id,
-        tr_id,
-        epoch,
-        round,
-        proposer,
-        datetime(+timestamp/1000).format("YYYY-MM-DD HH:mm:ss"),
-        JSON.stringify(changes),
-        JSON.stringify(events),
-        JSON.stringify(previous_block_votes),
-        JSON.stringify(failed_proposer_indices)
+        data.id,
+        +data.epoch,
+        +data.round,
+        data.proposer,
+        datetime(+data.timestamp/1000).format("YYYY-MM-DD HH:mm:ss"),
+        JSON.stringify(data.previous_block_votes_bitvec),
+        JSON.stringify(data.failed_proposer_indices)
     ])
 
-    await saveChanges(id, changes)
-    await saveEvents(id, events)
+    await saveChanges(id, data.changes)
+    await saveEvents (id, data.events)
 }
 
 export const savePayload = async (id, data) => {
@@ -202,59 +201,50 @@ export const saveEvents = async (id, data) => {
     }
 }
 
-export const processTransaction = async (data) => {
-    const id = await saveTransaction(data)
-
-    if (data.type === 'user_transaction') {
-        await saveUserTransaction(id, data)
-    }
-
-    if (data.type === 'block_metadata_transaction') {
-        await saveMetaTransaction(id, data)
-    }
-}
-
 export const getPack = async (limit = 100, start = 0) => {
     const response = await aptos.getTransactions({limit, start})
-
     if (!response.ok) {
         throw new Error(response.message)
     }
-
     return response.payload
 }
 
 export const savePack = async (data, start) => {
     let index = start
-    for(let t of data) {
-        await processTransaction(t)
-        index++
+    try {
+        for (let t of data) {
+            const id = await saveTransaction(t)
+            if (t.type === 'user_transaction') await saveUserTransaction(id, t)
+            if (t.type === 'block_metadata_transaction') await saveMetaTransaction(id, t)
+            index++
+        }
+        await setLastVersion(index)
+        info(`Block complete from ${start} to ${index}`)
+    } catch (e) {
+        error("savePack --> " + e.message)
     }
-    await setLastVersion(index)
 }
 
 export const startArchiveProcess = async (batch_size = 100) => {
     let start = await getLastVersion() // ver begin
     let ledger = await getLedger()
 
-    while (start >= ledger.version) {
+    while (+start.version >= +ledger.version) {
+        info(`No transactions, wait 5 seconds and try again!..`)
         await sleep(5_000)
         await startArchiveProcess(batch_size)
     }
 
-    const pack = await getPack(batch_size, start)
+    const pack = await getPack(batch_size, +start.version)
 
-    await query("BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED")
     try {
-        await savePack(pack, start)
+        await query("BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED")
+        await savePack(pack, start.version)
         await query("COMMIT")
+        await sleep(100)
+        await startArchiveProcess(batch_size)
     } catch (e) {
-        console.log(e.message)
         await query("ROLLBACK")
+        throw new Error("startArchiveProcess --> " + e.message)
     }
-
-    await sleep(3000)
-    console.log(`Batch size processed...from ${start} to ${+start + +batch_size}`)
-
-    await startArchiveProcess(batch_size)
 }

@@ -6,10 +6,9 @@ import {broadcast, runWebServer} from "./modules/webserver.js";
 import {createDBConnection} from "./modules/postgres.js";
 import {Aptos} from "@olton/aptos-api";
 import {startArchiveProcess, updateLedgerStatus} from "./modules/archive.js";
+import {readJson} from "./helpers/readers.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
-const readJson = (path) => JSON.parse(fs.readFileSync(path, 'utf-8'))
 
 globalThis.rootPath = path.dirname(__dirname)
 globalThis.serverPath = __dirname
@@ -19,11 +18,12 @@ globalThis.pkg = readJson(""+path.resolve(rootPath, "package.json"))
 globalThis.config = readJson(""+path.resolve(serverPath, "config.json"))
 globalThis.appVersion = pkg.version
 globalThis.appName = `Aptos Archive Node v${pkg.version}`
-globalThis.indexer = null
+
+const batch_size = 100
 
 const runProcesses = () => {
     setImmediate( updateLedgerStatus )
-    setImmediate( startArchiveProcess )
+    setImmediate( startArchiveProcess, batch_size )
 }
 
 export const run = async () => {

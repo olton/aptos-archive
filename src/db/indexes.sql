@@ -34,4 +34,34 @@ create index idx_meta_transactions_timestamp on meta_transactions (timestamp);
 create index idx_meta_transactions_tr_id on meta_transactions (tr_id);
 create unique index ui_meta_transactions_id on meta_transactions (id);
 
+-- Changes
+alter table changes
+    add constraint fk_changes_transaction
+        foreign key (id) references transactions
+            on update cascade on delete cascade;
+
+create index idx_changes_address on changes (address);
+create index idx_changes_id on changes (id);
+create index idx_changes_type on changes (type);
+
+-- Events
+create index idx_events_id on events (id);
+create index idx_events_key on events (key);
+create index idx_events_sn on events (sequence_number);
+create index idx_events_type on events (type);
+
+alter table events
+    add constraint fk_events_transaction
+        foreign key (id) references transactions
+            on update cascade on delete cascade;
+
+-- Payloads
+create index idx_payloads_function on payloads (function);
+create index idx_payloads_id on payloads (id);
+create index idx_payloads_type on payloads (type);
+
+alter table payloads
+    add constraint fk_payloads_transaction
+        foreign key (id) references transactions
+            on update cascade on delete cascade;
 

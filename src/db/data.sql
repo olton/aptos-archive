@@ -5,3 +5,4 @@ insert into counters(counter_type, counter_value) values('state_checkpoint_trans
 insert into counters(counter_type, counter_value) values('failed_transaction', 0);
 insert into counters(counter_type, counter_value) values('success_transaction', 0);
 
+insert into archive_status(version, timestamp) values(1, CURRENT_TIMESTAMP)

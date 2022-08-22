@@ -7,8 +7,8 @@ export const log = (msg, marker = 'info', ...rest) => {
 
 const info = (msg, ...rest) => log(msg, 'info', ...rest)
 const alert = (msg, ...rest) => log(msg, 'alert', ...rest)
+const error = (msg, ...rest) => log(msg, 'error', ...rest)
 const debug = (msg, ...rest) => log(msg, 'debug', ...rest)
-const error = alert
 
 export {
     info,

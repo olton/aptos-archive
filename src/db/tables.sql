@@ -113,5 +113,12 @@ create table addresses
     type    address_type default 'user'::address_type
 );
 
+create table gas_used
+(
+    function varchar          not null,
+    gas      bigint default 0 not null
+);
+
+
 create sequence transactions_id_seq;
 alter sequence transactions_id_seq owned by transactions.id;

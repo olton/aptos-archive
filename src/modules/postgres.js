@@ -13,6 +13,8 @@ const createPool = (conn) => {
         database,
         password,
         port,
+        allowExitOnIdle: true,
+        max: 25,
     })
 
     pool.on('error', (err, client) => {
@@ -66,7 +68,8 @@ export const query = async (q, p) => {
         }
         result = res
     } catch (e) {
-        info(e.message, e.stack)
+        // console.log("Errored sql: ", q, p)
+        throw new Error("Query --> "+e.message)
     } finally {
         client.release()
     }
@@ -80,7 +83,7 @@ export const batch = async (a = []) => {
     let result
     try {
         const start = Date.now()
-        client.query("BEGIN")
+        await client.query("BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED")
         for (let q of a) {
             const [sql, par] = q
             await client.query(sql, par)
@@ -101,6 +104,22 @@ export const batch = async (a = []) => {
     return result
 }
 
+export const beginTransaction = async () => {
+    await query("BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED")
+}
+
+export const commitTransaction = async () => {
+    await query("COMMIT")
+}
+
+export const rollbackTransaction = async () => {
+    await query("ROLLBACK")
+}
+
 export const getClient = async () => {
     return await globalThis.postgres.connect()
+}
+
+export const releaseClient = c => {
+    c.release()
 }
