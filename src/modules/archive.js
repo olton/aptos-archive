@@ -1,7 +1,8 @@
-import {beginTransaction, commitTransaction, getClient, query, releaseClient, rollbackTransaction} from "./postgres.js";
+import {query} from "./postgres.js";
 import {datetime} from "@olton/datetime";
 import {sleep} from "../helpers/sleep.js";
-import {error, info} from "../helpers/logging.js";
+import {info} from "../helpers/logging.js";
+import {cleanObj} from "../helpers/clean-string.js";
 
 const TRANS_TYPES = {
     'user_transaction': 'user',
@@ -137,7 +138,7 @@ export const saveUserTransaction = async (id, data) => {
         await saveChanges(id, data.changes)
         await saveEvents (id, data.events)
     } catch (e) {
-        console.log(e.message)
+        throw new Error("saveUserTransaction --> "+e.message)
     }
 }
 
@@ -156,19 +157,24 @@ export const saveMetaTransaction = async (id, data) => {
         values($1, $2, $3, $4, $5, $6, $7, $8)
         ON CONFLICT DO NOTHING
     `
-    await query(sql, [
-        id,
-        data.id,
-        +data.epoch,
-        +data.round,
-        data.proposer,
-        datetime(+data.timestamp/1000).format("YYYY-MM-DD HH:mm:ss"),
-        JSON.stringify(data.previous_block_votes_bitvec),
-        JSON.stringify(data.failed_proposer_indices)
-    ])
 
-    await saveChanges(id, data.changes)
-    await saveEvents (id, data.events)
+    try {
+        await query(sql, [
+            id,
+            data.id,
+            +data.epoch,
+            +data.round,
+            data.proposer,
+            datetime(+data.timestamp / 1000).format("YYYY-MM-DD HH:mm:ss"),
+            JSON.stringify(data.previous_block_votes_bitvec),
+            JSON.stringify(data.failed_proposer_indices)
+        ])
+
+        await saveChanges(id, data.changes)
+        await saveEvents(id, data.events)
+    } catch (e) {
+        throw new Error("saveMetaTransaction --> "+e.message)
+    }
 }
 
 export const savePayload = async (id, data) => {
@@ -177,7 +183,11 @@ export const savePayload = async (id, data) => {
         values($1, $2, $3, $4, $5)
     `
 
-    await query(sql, [id, data.function, JSON.stringify(data.type_arguments), JSON.stringify(data.arguments), data.type])
+    try {
+        await query(sql, [id, data.function, JSON.stringify(data.type_arguments), JSON.stringify(data.arguments), data.type])
+    } catch (e) {
+        throw new Error("savePayload --> "+e.message)
+    }
 }
 
 export const saveChanges = async (id, data) => {
@@ -186,8 +196,12 @@ export const saveChanges = async (id, data) => {
         values($1, $2, $3, $4, $5)
     `
 
-    for (let c of data) {
-        await query(sql, [id, c.address, c.state_key_hash, JSON.stringify(c.data), c.type])
+    try {
+        for (let c of data) {
+            await query(sql, [id, c.address, c.state_key_hash, JSON.stringify(c.data), c.type])
+        }
+    } catch (e) {
+        throw new Error("saveChanges --> "+e.message)
     }
 }
 
@@ -196,8 +210,13 @@ export const saveEvents = async (id, data) => {
         insert into events(id, key, sequence_number, type, data)
         values($1, $2, $3, $4, $5)
     `
-    for (let e of data) {
-        await query(sql, [id, e.key, e.sequence_number, e.type, JSON.stringify(e.data)])
+
+    try {
+        for (let e of data) {
+            await query(sql, [id, e.key, e.sequence_number, e.type, JSON.stringify(e.data)])
+        }
+    } catch (e) {
+        throw new Error("saveEvents --> "+e.message)
     }
 }
 
@@ -211,6 +230,9 @@ export const getPack = async (limit = 100, start = 0) => {
 
 export const savePack = async (data, start) => {
     let index = start
+
+    data = cleanObj(data)
+
     try {
         for (let t of data) {
             const id = await saveTransaction(t)
@@ -221,7 +243,7 @@ export const savePack = async (data, start) => {
         await setLastVersion(index)
         info(`Block complete from ${start} to ${index}`)
     } catch (e) {
-        error("savePack --> " + e.message)
+        throw new Error("savePack --> " + e.message)
     }
 }
 
