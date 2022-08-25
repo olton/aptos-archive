@@ -1,29 +1,21 @@
-import path from "path"
-import { fileURLToPath } from 'url'
-import fs from "fs";
+import "./modules/global.js"
 import {info, error} from "./helpers/logging.js"
 import {broadcast, runWebServer} from "./modules/webserver.js";
 import {createDBConnection} from "./modules/postgres.js";
 import {Aptos} from "@olton/aptos-api";
 import {startArchiveProcess, updateLedgerStatus} from "./modules/archive.js";
-import {readJson} from "./helpers/readers.js";
+import {getArguments} from "./helpers/get-arguments.js";
+import {Interact} from "./modules/api-interact.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-globalThis.rootPath = path.dirname(__dirname)
-globalThis.serverPath = __dirname
-globalThis.web = rootPath + "/src/public"
-globalThis.srcPath = rootPath + "/src"
-globalThis.pkg = readJson(""+path.resolve(rootPath, "package.json"))
-globalThis.config = readJson(""+path.resolve(serverPath, "config.json"))
-globalThis.appVersion = pkg.version
-globalThis.appName = `Aptos Archive Node v${pkg.version}`
 
 const batch_size = 100
 
+const args = getArguments()
+
 const runProcesses = () => {
-    setImmediate( updateLedgerStatus )
-    setImmediate( startArchiveProcess, batch_size )
+    if (!args.web) setImmediate( updateLedgerStatus )
+    if (!args.web) setImmediate( startArchiveProcess, batch_size )
 }
 
 export const run = async () => {
@@ -67,4 +59,5 @@ export const run = async () => {
     }
 }
 
+Interact.run()
 run()

@@ -1,17 +1,18 @@
 import http from "http";
-import https from "https";
 import fs from "fs";
 import path from "path";
 import {WebSocketServer, WebSocket} from "ws";
-import assert from "assert";
 import express from "express";
 import session from "express-session"
 import favicon from "serve-favicon"
 import {fileURLToPath} from "url";
 import {info} from "../helpers/logging.js";
+import {readJson} from "../helpers/readers.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const clientPath = path.resolve(__dirname, "public")
+const clientPath = path.resolve(path.dirname(__dirname), "public")
+const rootPath = path.dirname(path.dirname(__dirname))
+const packageJson = readJson(path.resolve(rootPath, 'package.json'))
 
 const app = express()
 
@@ -36,17 +37,17 @@ const route = () => {
     app.use('/images', express.static(path.join(clientPath, 'images')))
 
     if (fs.existsSync(path.resolve(clientPath, 'favicon.ico')))
-        app.use(favicon(path.join(srcPath, 'client', 'favicon.ico')))
+        app.use(favicon(path.resolve(clientPath, 'favicon.ico')))
 
     app.locals.pretty = true
-    app.set('views', path.resolve(srcPath, 'public'))
+    app.set('views', clientPath)
     app.set('view engine', 'pug')
 
     const clientConfig = JSON.stringify({
         "server": {
-            "host": config.host,
-            "port": config.port,
-            "secure": config.secure === true
+            "host": config.client.server,
+            "port": config.client.port,
+            "secure": config.client.secure
         },
     })
     const dateFormat = JSON.stringify(config['date-format'])
@@ -54,8 +55,8 @@ const route = () => {
     app.get('/', async (req, res) => {
         res.render('index', {
             title: appName,
-            appVersion,
-            config: clientConfig,
+            appVersion: packageJson.version,
+            clientConfig,
             dateFormat,
         })
     })
@@ -67,6 +68,8 @@ export const runWebServer = () => {
     httpWebserver = http.createServer({}, app)
 
     const runInfo = `Aptos Archive Node running on http://${config.host}:${config.port}`
+
+    route()
 
     httpWebserver.listen(config.port, () => {
         info(runInfo)
@@ -83,19 +86,12 @@ export const websocket = (server) => {
         const ip = req.socket.remoteAddress
 
         ws.send(JSON.stringify({
-            channel: "welcome",
-            data: `Welcome to Server v${appVersion}`
+            channel: "welcome"
         }))
 
         ws.on('message', async (msg) => {
             const {channel, data} = JSON.parse(msg)
-
-            switch (channel) {
-                case "ledger": {
-                    response(ws, channel, {ledger: cache.ledger})
-                    break
-                }
-            }
+            router(ws, channel, data)
         })
     })
 }
@@ -113,4 +109,29 @@ export const broadcast = (data) => {
             client.send(JSON.stringify(data))
         }
     })
+}
+
+const router = async (ws, channel, data) => {
+    switch (channel) {
+        case "api::ledger": {
+            response(ws, channel, globalThis.ledger)
+            break
+        }
+        case "api::archive": {
+            response(ws, channel, globalThis.archive)
+            break
+        }
+        case "api::transactions::count": {
+            response(ws, channel, globalThis.counters)
+            break
+        }
+        case "api::gas::count": {
+            response(ws, channel, globalThis.gasCount)
+            break
+        }
+        case "api::coin::transfer": {
+            response(ws, channel, globalThis.coinTransfer)
+            break
+        }
+    }
 }

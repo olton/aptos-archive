@@ -1,0 +1,1 @@
+export const n2f = (n) => Number(n).format(0, null, " ", ".")

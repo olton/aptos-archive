@@ -1,0 +1,136 @@
+section.container-fluid
+    div.container
+        div.row
+            div.cell-md-6.cell-xxl-3
+                div(data-role="panel" data-title-caption="LEDGER STATE" data-title-icon="<span class='mif-developer_board'>")
+                    div.w-100.h-100.p-2
+                        table.table.cell-border.ledger-table
+                            tbody#ledger-status
+
+            div.cell-md-6.cell-xxl-3
+                div(data-role="panel" data-title-caption="ARCHIVE STATE" data-title-icon="<span class='mif-library'>")
+                    div.w-100.h-100.p-2.d-flex.flex-align-center.flex-justify-center.flex-column
+                        div.value.big-value#archive-version 0
+                        div.value-label.text-muted#archive-time-label timestamp
+                        div#archive-time ...
+
+            div.cell-md-6.cell-xxl-3
+                div(data-role="panel" data-title-caption="TRANSACTIONS COUNT" data-title-icon="<span class='mif-calculator2'>")
+                    div.w-100.h-100.p-2
+                        div.row.h-100
+                            div.cell-6.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#genesis-count 0
+                                    div.value-label.text-muted GENESIS
+
+                            div.cell-6.border-left.bd-system.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#meta-count 0
+                                    div.value-label.text-muted META
+
+                            div.cell-6.h-50.border-top.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#user-count 0
+                                    div.value-label.text-muted USER
+
+                            div.cell-6.border-left.border-top.bd-system.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#state-count 0
+                                    div.value-label.text-muted STATE
+
+            div.cell-md-6.cell-xxl-3
+                div(data-role="panel" data-title-caption="TRANSACTIONS TOTAL" data-title-icon="<span class='mif-calculator'>")
+                    div.w-100.h-100.p-2
+                        div.row.h-100
+                            div.cell-6.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#total-count 0
+                                    div.value-label.text-muted TOTAL
+
+                            div.cell-6.border-left.bd-system.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#success-count 0
+                                    div.value-label.text-muted SUCCESS
+
+                            div.cell-6.h-50.border-top.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#failed-count 0
+                                    div.value-label.text-muted FAILED
+
+                            div.cell-6.border-left.border-top.bd-system.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#unknown-count 0
+                                    div.value-label.text-muted UNKNOWN
+
+            div.cell-md-12.cell-xxl-4
+                div(data-role="panel" data-title-caption="GAS USAGE" data-title-icon="<span class='mif-calculator'>")
+                    div.w-100.h-100.p-2
+                        div.row.h-100
+                            div.cell-6.border-left.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#gas-total 0
+                                    div.value-label.text-muted GAS TOTAL
+
+                            div.cell-6.h-50.border-left.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#gas-max 0
+                                    div.value-label.text-muted GAS MAX
+
+                            div.cell-6.border-top.bd-system.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#gas-min 0
+                                    div.value-label.text-muted GAS MIN
+
+                            div.cell-6.h-50.border-top.border-left.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#gas-avg 0
+                                    div.value-label.text-muted GAS AVG
+
+            div.cell-md-12.cell-xxl-4
+                div(data-role="panel" data-title-caption="TRANSFER COIN" data-title-icon="<span class='mif-move-up'>")
+                    div.w-100.h-100.p-2
+                        div.row.h-100
+                            div.cell-6.border-left.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#coin-total 0
+                                    div.value-label.text-muted COIN TOTAL
+
+                            div.cell-6.h-50.border-left.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#coin-max 0
+                                    div.value-label.text-muted COIN MAX
+
+                            div.cell-6.border-top.bd-system.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#coin-min 0
+                                    div.value-label.text-muted COIN MIN
+
+                            div.cell-6.h-50.border-top.border-left.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#coin-avg 0
+                                    div.value-label.text-muted COIN AVG
+
+            div.cell-md-12.cell-xxl-4
+                div(data-role="panel" data-title-caption="MINT COIN" data-title-icon="<span class='mif-add-shopping-cart'>")
+                    div.w-100.h-100.p-2
+                        div.row.h-100
+                            div.cell-6.border-left.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#coin-total 0
+                                    div.value-label.text-muted COIN TOTAL
+
+                            div.cell-6.h-50.border-left.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#coin-max 0
+                                    div.value-label.text-muted COIN MAX
+
+                            div.cell-6.border-top.bd-system.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#coin-min 0
+                                    div.value-label.text-muted COIN MIN
+
+                            div.cell-6.h-50.border-top.border-left.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
+                                div.text-bold.text-center
+                                    div.text-leader2.text-bold.value#coin-avg 0
+                                    div.value-label.text-muted COIN AVG
+
