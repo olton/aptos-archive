@@ -141,5 +141,13 @@ const router = async (ws, channel, data) => {
             response(ws, channel, globalThis.lastTransactions)
             break
         }
+        case "api::collections::count": {
+            response(ws, channel, globalThis.collectionsCount)
+            break
+        }
+        case "api::tokens::count": {
+            response(ws, channel, globalThis.tokensCount)
+            break
+        }
     }
 }

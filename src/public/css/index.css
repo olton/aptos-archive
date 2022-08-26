@@ -52,6 +52,7 @@ td,
 }
 .panel-title .caption {
   text-align: center;
+  margin-left: -42px;
 }
 .light-mode-switch,
 .dark-mode-switch {

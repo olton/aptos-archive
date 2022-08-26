@@ -29,10 +29,19 @@ const saveCoinMint = async () => {
 }
 
 const saveLastTransactions = async () => {
-    globalThis.lastTransactions = await arch.transactions({limit: 25, offset: 0})
+    globalThis.lastTransactions = await arch.transactions({order: "timestamp desc", limit: 25, offset: 0})
     setTimeout(saveLastTransactions, 1_000)
 }
 
+const saveCollectionsCount = async () => {
+    globalThis.collectionsCount = await arch.collectionsCount()
+    setTimeout(saveCollectionsCount, 10_000)
+}
+
+const saveTokensCount = async () => {
+    globalThis.tokensCount = await arch.tokensCount()
+    setTimeout(saveTokensCount, 10_000)
+}
 
 export const Interact = {
     run(){
@@ -43,5 +52,7 @@ export const Interact = {
         setImmediate(saveCoinTransfer)
         setImmediate(saveCoinMint)
         setImmediate(saveLastTransactions)
+        setImmediate(saveCollectionsCount)
+        setImmediate(saveTokensCount)
     }
 }

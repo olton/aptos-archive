@@ -83,3 +83,11 @@ export const updateLastTransactionsPanel = (data) => {
         `).appendTo(target)
     }
 }
+
+export const updateCollectionsCountPanel = data => {
+    $("#collections-count").html(data)
+}
+
+export const updateTokensCountPanel = data => {
+    $("#tokens-count").html(data)
+}
