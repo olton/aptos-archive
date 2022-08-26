@@ -10,8 +10,9 @@ section.container-fluid
             div.cell-md-6.cell-xxl-3
                 div(data-role="panel" data-title-caption="ARCHIVE STATE" data-title-icon="<span class='mif-library'>")
                     div.w-100.h-100.p-2.d-flex.flex-align-center.flex-justify-center.flex-column
-                        div.value.big-value#archive-version 0
-                        div.value-label.text-muted#archive-time-label timestamp
+                        div.value-label.text-muted#archive-version-label version
+                        div.value.big-value.mt-0#archive-version 0
+                        div.mt-10.value-label.text-muted#archive-time-label timestamp
                         div#archive-time ...
 
             div.cell-md-6.cell-xxl-3
@@ -68,22 +69,22 @@ section.container-fluid
                         div.row.h-100
                             div.cell-6.border-left.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
                                 div.text-bold.text-center
-                                    div.text-leader2.text-bold.value#gas-total 0
+                                    div.text-leader2.text-bold.value#gas-coin-total 0
                                     div.value-label.text-muted GAS TOTAL
 
                             div.cell-6.h-50.border-left.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
                                 div.text-bold.text-center
-                                    div.text-leader2.text-bold.value#gas-max 0
+                                    div.text-leader2.text-bold.value#gas-coin-max 0
                                     div.value-label.text-muted GAS MAX
 
                             div.cell-6.border-top.bd-system.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
                                 div.text-bold.text-center
-                                    div.text-leader2.text-bold.value#gas-min 0
+                                    div.text-leader2.text-bold.value#gas-coin-min 0
                                     div.value-label.text-muted GAS MIN
 
                             div.cell-6.h-50.border-top.border-left.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
                                 div.text-bold.text-center
-                                    div.text-leader2.text-bold.value#gas-avg 0
+                                    div.text-leader2.text-bold.value#gas-coin-avg 0
                                     div.value-label.text-muted GAS AVG
 
             div.cell-md-12.cell-xxl-4
@@ -92,22 +93,22 @@ section.container-fluid
                         div.row.h-100
                             div.cell-6.border-left.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
                                 div.text-bold.text-center
-                                    div.text-leader2.text-bold.value#coin-total 0
+                                    div.text-leader2.text-bold.value#transfer-coin-total 0
                                     div.value-label.text-muted COIN TOTAL
 
                             div.cell-6.h-50.border-left.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
                                 div.text-bold.text-center
-                                    div.text-leader2.text-bold.value#coin-max 0
+                                    div.text-leader2.text-bold.value#transfer-coin-max 0
                                     div.value-label.text-muted COIN MAX
 
                             div.cell-6.border-top.bd-system.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
                                 div.text-bold.text-center
-                                    div.text-leader2.text-bold.value#coin-min 0
+                                    div.text-leader2.text-bold.value#transfer-coin-min 0
                                     div.value-label.text-muted COIN MIN
 
                             div.cell-6.h-50.border-top.border-left.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
                                 div.text-bold.text-center
-                                    div.text-leader2.text-bold.value#coin-avg 0
+                                    div.text-leader2.text-bold.value#transfer-coin-avg 0
                                     div.value-label.text-muted COIN AVG
 
             div.cell-md-12.cell-xxl-4
@@ -116,21 +117,34 @@ section.container-fluid
                         div.row.h-100
                             div.cell-6.border-left.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
                                 div.text-bold.text-center
-                                    div.text-leader2.text-bold.value#coin-total 0
+                                    div.text-leader2.text-bold.value#mint-coin-total 0
                                     div.value-label.text-muted COIN TOTAL
 
                             div.cell-6.h-50.border-left.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
                                 div.text-bold.text-center
-                                    div.text-leader2.text-bold.value#coin-max 0
+                                    div.text-leader2.text-bold.value#mint-coin-max 0
                                     div.value-label.text-muted COIN MAX
 
                             div.cell-6.border-top.bd-system.h-50.d-flex.flex-column.flex-align-center.flex-justify-center
                                 div.text-bold.text-center
-                                    div.text-leader2.text-bold.value#coin-min 0
+                                    div.text-leader2.text-bold.value#mint-coin-min 0
                                     div.value-label.text-muted COIN MIN
 
                             div.cell-6.h-50.border-top.border-left.bd-system.d-flex.flex-column.flex-align-center.flex-justify-center
                                 div.text-bold.text-center
-                                    div.text-leader2.text-bold.value#coin-avg 0
+                                    div.text-leader2.text-bold.value#mint-coin-avg 0
                                     div.value-label.text-muted COIN AVG
 
+            div.cell-12
+                div(data-role="panel" data-title-caption="LAST 25 TRANSACTIONS <div class='ml-auto d-flex flex-row flex-align-center'><span class='reduce-1 mr-1'>RELOAD</span><input id='reload_last_transactions' type='checkbox' checked data-role='switch' data-show-on-off='true' data-on='yes' data-off='no' class='panel-title-switch'></div>" data-cls-title-caption="d-flex flex-row flex-nowrap" data-title-icon="<span class='mif-table'>")
+                    div.w-100.h-100.p-2
+                        table.table.striped.compact(style="font-family: 'Roboto Mono'")
+                            thead
+                                tr
+                                    th(style="width: 30px;") TY
+                                    th(style="width: 30px;") ST
+                                    th(style="width: 150px;") VERSION
+                                    th HASH
+                                    th.text-center(style="width: 100px;") GAS
+                                    th(style="width: 200px;") TIMESTAMP
+                            tbody#last-transactions

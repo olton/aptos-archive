@@ -1,3 +1,17 @@
+@font-face {
+  font-family: 'PT Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/ptmono/v13/9oRONYoBnWILk-9ArCg.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Roboto Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://fonts.gstatic.com/s/robotomono/v22/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vqPQw.ttf) format('truetype');
+}
 :root {
   --color-border: #dfdfdf;
   --color-value: #1f1f1f;
@@ -86,11 +100,14 @@ html.dark-mode .header {
   background: var(--body-background);
   color: var(--color-text);
 }
+html.dark-mode .panel {
+  border-color: #444c56 !important;
+}
+html.dark-mode .panel * {
+  border-color: #444c56 !important;
+}
 html.dark-mode .bd-system,
 html.dark-mode .bd-default,
-html.dark-mode .panel,
-html.dark-mode .panel-title,
-html.dark-mode td,
 html.dark-mode .input,
 html.dark-mode .select {
   border-color: var(--color-border) !important;
@@ -104,5 +121,15 @@ html.dark-mode .light-mode-switch {
 }
 html.dark-mode .dark-mode-switch {
   display: none;
+}
+html.dark-mode .table.striped tbody tr:nth-child(even),
+html.dark-mode .table.striped .tbody .tr:nth-child(even) {
+  background: #22272e;
+}
+html.dark-mode .table * {
+  border-bottom-color: #444c56 !important;
+}
+html.dark-mode .table thead th {
+  color: #fff;
 }
 /*# sourceMappingURL=index.css.map */

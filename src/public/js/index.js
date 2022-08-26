@@ -21,4 +21,8 @@ $(".light-mode-switch, .dark-mode-switch").on("click", () => {
     }
 })
 
+$("#reload_last_transactions").on("click", function() {
+    globalThis.autoReloadLastTransactions = this.checked
+})
+
 connect()

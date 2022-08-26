@@ -1,5 +1,9 @@
 import {
-    updateArchivePanel, updateCoinTransferCountPanel, updateGasCountPanel,
+    updateArchivePanel,
+    updateCoinMintCountPanel,
+    updateCoinTransferCountPanel,
+    updateGasCountPanel,
+    updateLastTransactionsPanel,
     updateLedgerPanel,
     updateTransactionsCountPanel,
     updateTransactionsTotalPanel
@@ -7,6 +11,7 @@ import {
 
 globalThis.webSocket = null
 globalThis.ipData = await (await fetch('https://api.db-ip.com/v2/free/self')).json()
+globalThis.autoReloadLastTransactions = true
 
 const isOpen = (ws) => ws && ws.readyState === ws.OPEN
 
@@ -67,6 +72,8 @@ const wsMessageController = (ws, response) => {
             request('api::transactions::count')
             request('api::gas::count')
             request('api::coin::transfer')
+            request('api::coin::mint')
+            request('api::transactions::last')
             break
         }
         case 'api::ledger': {
@@ -92,6 +99,16 @@ const wsMessageController = (ws, response) => {
         }
         case 'api::coin::transfer': {
             updateCoinTransferCountPanel(data)
+            setTimeout(request, 1000, channel)
+            break
+        }
+        case 'api::coin::mint': {
+            updateCoinMintCountPanel(data)
+            setTimeout(request, 1000, channel)
+            break
+        }
+        case 'api::transactions::last': {
+            if (globalThis.autoReloadLastTransactions) updateLastTransactionsPanel(data)
             setTimeout(request, 1000, channel)
             break
         }

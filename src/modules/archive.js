@@ -87,7 +87,7 @@ export const saveTransaction = async (data) => {
     try {
         const result = await query(sql, [
             data.hash,
-            TRANS_TYPES[data.type],
+            TRANS_TYPES[data.type] ? TRANS_TYPES[data.type] : data.type,
             data.version,
             data.success,
             data.vm_status,

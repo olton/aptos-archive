@@ -25,7 +25,14 @@ html.dark-mode {
     color: var(--color-text);
   }
 
-  .bd-system, .bd-default, .panel, .panel-title, td, .input, .select {
+  .panel {
+    border-color: #444c56!important;
+    * {
+      border-color: #444c56!important;
+    }
+  }
+
+  .bd-system, .bd-default, .input, .select {
     border-color: var(--color-border)!important;
   }
 
@@ -39,5 +46,21 @@ html.dark-mode {
 
   .dark-mode-switch {
     display: none;
+  }
+  .table {
+    &.striped {
+      tbody tr:nth-child(even),
+      .tbody .tr:nth-child(even) {
+        background: #22272e;
+      }
+    }
+    * {
+      border-bottom-color: #444c56!important;
+    }
+    thead {
+      th {
+        color: #fff;
+      }
+    }
   }
 }

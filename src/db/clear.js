@@ -10,7 +10,7 @@ globalThis.config = JSON.parse(fs.readFileSync(configFile, 'utf-8'))
 
 const tables = [
     'addresses', 'transactions', 'user_transactions', 'meta_transactions', 'state_transactions',
-    'payloads', 'changes', 'events'
+    'payloads', 'changes', 'events', 'gas_used', 'collections', 'tokens'
 ]
 
 await createDBConnection()
@@ -27,7 +27,7 @@ console.log("Reset ledger...")
 await query(`update ledger set chain_id = 0, version = 0, epoch = 0, block_height = 0 where true`)
 console.log("Reset counters...")
 await query(`update counters set counter_value = 0 where true`)
-console.log("Reset gas used...")
-await query(`delete from gas_used where true`)
+console.log("Reset coin counters...")
+await query(`update coin_counters set coin_total = 0, coin_max = 0, coin_min = 100, coin_avg = 0 where true`)
 
 console.log("Archive DB cleared!")

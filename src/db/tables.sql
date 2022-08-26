@@ -119,6 +119,16 @@ create table gas_used
     gas      bigint default 0 not null
 );
 
+create table coin_counters
+(
+    function   varchar                             not null,
+    coin_total bigint    default 0                 not null,
+    coin_max   bigint    default 0                 not null,
+    coin_min   bigint    default 0                 not null,
+    coin_avg   bigint    default 0                 not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null
+);
+
 
 create sequence transactions_id_seq;
 alter sequence transactions_id_seq owned by transactions.id;

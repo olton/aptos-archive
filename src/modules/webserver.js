@@ -133,5 +133,13 @@ const router = async (ws, channel, data) => {
             response(ws, channel, globalThis.coinTransfer)
             break
         }
+        case "api::coin::mint": {
+            response(ws, channel, globalThis.coinMint)
+            break
+        }
+        case "api::transactions::last": {
+            response(ws, channel, globalThis.lastTransactions)
+            break
+        }
     }
 }

@@ -25,26 +25,24 @@ export const CoinAPI = {
 
     transferCoinCount: async () => {
         const sql = `
-            select sum(amount::bigint) as coin_total,
-                   max(amount::bigint) as coin_max,
-                   min(amount::bigint) as coin_min,
-                   avg(amount::bigint) as coin_avg
-            from v_transfer_coin
-            where amount::text not like '0x%'
-              and amount::bigint > 0
+            select coin_total,
+                   coin_max,
+                   coin_min,
+                   coin_avg
+            from coin_counters
+            where function = 'transfer'
         `
         return (await query(sql)).rows[0]
     },
 
     mintCoinCount: async () => {
         const sql = `
-            select sum(amount::bigint) as coin_total,
-                   max(amount::bigint) as coin_max,
-                   min(amount::bigint) as coin_min,
-                   avg(amount::bigint) as coin_avg
-            from v_mint_coin
-            where amount::text not like '0x%'
-              and amount::bigint > 0
+            select coin_total,
+                   coin_max,
+                   coin_min,
+                   coin_avg
+            from coin_counters
+            where function = 'mint' 
         `
         return (await query(sql)).rows[0]
     }

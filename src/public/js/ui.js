@@ -37,12 +37,12 @@ export const updateTransactionsTotalPanel = (data = []) => {
 }
 
 export const updateGasCountPanel = (data = []) => {
-    if (!data.gas_total) return
-    const {gas_total, gas_max, gas_min, gas_avg} = data
-    $("#gas-max").html(n2f(+gas_max))
-    $("#gas-min").html(n2f(+gas_min))
-    $("#gas-avg").html(n2f(+gas_avg))
-    $("#gas-total").html(n2f(+gas_total))
+    if (!data.coin_total) return
+    const {coin_total, coin_max, coin_min, coin_avg} = data
+    $("#gas-coin-total").html(n2f(+coin_total))
+    $("#gas-coin-max").html(n2f(+coin_max))
+    $("#gas-coin-min").html(n2f(+coin_min))
+    $("#gas-coin-avg").html(n2f(+coin_avg))
 }
 
 export const updateArchivePanel = (data = {}) => {
@@ -55,8 +55,31 @@ export const updateArchivePanel = (data = {}) => {
 export const updateCoinTransferCountPanel = (data = {}) => {
     if (!data.coin_total) return
     const {coin_total, coin_max, coin_min, coin_avg} = data
-    $("#coin-total").html(n2f(+coin_total))
-    $("#coin-max").html(n2f(+coin_max))
-    $("#coin-min").html(n2f(+coin_min))
-    $("#coin-avg").html(n2f(+coin_avg))
+    $("#transfer-coin-total").html(n2f(+coin_total))
+    $("#transfer-coin-max").html(n2f(+coin_max))
+    $("#transfer-coin-min").html(n2f(+coin_min))
+    $("#transfer-coin-avg").html(n2f(+coin_avg))
+}
+
+export const updateCoinMintCountPanel = (data = {}) => {
+    if (!data.coin_total) return
+    const {coin_total, coin_max, coin_min, coin_avg} = data
+    $("#mint-coin-total").html(n2f(+coin_total))
+    $("#mint-coin-max").html(n2f(+coin_max))
+    $("#mint-coin-min").html(n2f(+coin_min))
+    $("#mint-coin-avg").html(n2f(+coin_avg))
+}
+
+export const updateLastTransactionsPanel = (data) => {
+    const target = $("#last-transactions").clear()
+    for (let r of data) {
+        $("<tr>").html(`
+            <td>${r.type === 'user' ? "<span class='mif-user'></span>" : r.type === 'meta' ? "<span class='mif-server'></span>" : r.type === 'state' ? "<span class='mif-beenhere'></span>" : "<span class='mif-cake'></span>"}</td>
+            <td>${r.success ? "<span class='mif-checkmark fg-green'></span>" : "<span class='mif-blocked fg-red'></span>"}</td>
+            <td>${r.version}</td>
+            <td>${r.hash}</td>
+            <td class="text-center">${r.gas_used}</td>
+            <td>${datetime(r.timestamp).format(dateFormat.full)}</td>
+        `).appendTo(target)
+    }
 }
