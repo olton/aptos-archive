@@ -29,7 +29,7 @@ const saveCoinMint = async () => {
 }
 
 const saveLastTransactions = async () => {
-    globalThis.lastTransactions = await arch.transactions({order: "timestamp desc", limit: 25, offset: 0})
+    globalThis.lastTransactions = await arch.transactions({order: "version::bigint desc", limit: 25, offset: 0})
     setTimeout(saveLastTransactions, 1_000)
 }
 
