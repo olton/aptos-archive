@@ -1,0 +1,12 @@
+div(data-role="panel" data-title-caption="LAST 25 TRANSACTIONS <div class='ml-auto d-flex flex-row flex-align-center'><span class='reduce-1 mr-1'>RELOAD</span><input id='reload_last_transactions' type='checkbox' checked data-role='switch' data-show-on-off='true' data-on='yes' data-off='no' class='panel-title-switch'></div>" data-cls-title-caption="d-flex flex-row flex-nowrap" data-title-icon="<span class='mif-table'>")
+    div.w-100.h-100.p-2
+        table.table.striped.compact(style="font-family: 'Roboto Mono'")
+            thead
+                tr
+                    th(style="width: 30px;") TY
+                    th(style="width: 30px;") ST
+                    th(style="width: 150px;") VERSION
+                    th HASH
+                    th.text-center(style="width: 100px;") GAS
+                    th(style="width: 200px;") TIMESTAMP
+            tbody#last-transactions
