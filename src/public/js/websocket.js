@@ -115,7 +115,7 @@ const wsMessageController = (ws, response) => {
         }
         case 'api::transactions::last': {
             if (globalThis.autoReloadLastTransactions) updateLastTransactionsPanel(data)
-            setTimeout(request, 1000, channel, {
+            setTimeout(request, 10_000, channel, {
                 limit: globalThis.trans_records
             })
             break
