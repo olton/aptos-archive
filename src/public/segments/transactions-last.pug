@@ -1,0 +1,24 @@
+div(data-role="panel" data-title-caption="<div class='text-center w-100' style='margin-left: 100px'>LAST 25 TRANSACTIONS</div> <div class='ml-auto d-flex flex-row flex-align-center'><span class='reduce-1 mr-1'>RELOAD</span><input id='reload_last_transactions' type='checkbox' checked data-role='switch' data-show-on-off='true' data-on='yes' data-off='no' class='panel-title-switch'></div>" data-cls-title-caption="d-flex flex-row flex-nowrap" data-title-icon="<span class='mif-table'>")
+    div.w-100.h-100.p-2
+        div.d-flex.flex-row.flex-align.center.tool-panel
+            div.mt-1.ml-2 ALL TYPES
+            div.ml-auto.d-flex.flex-row.flex-align.center
+                div.mt-1.mr-2 Select records count:
+                div.mt-1.mr-2 25
+                input.trans_records(type="radio" data-role="radio" name="trans_records" value="25" checked)
+                div.mt-1.mr-2 50
+                input.trans_records(type="radio" data-role="radio" name="trans_records" value="50")
+                div.mt-1.mr-2 100
+                input.trans_records(type="radio" data-role="radio" name="trans_records" value="100")
+
+        div#all-trans
+            table.table.striped.compact(style="font-family: 'Roboto Mono'")
+                thead
+                    tr
+                        th(style="width: 30px;") TY
+                        th(style="width: 30px;") ST
+                        th(style="width: 150px;") VERSION
+                        th HASH
+                        th.text-center(style="width: 100px;") GAS
+                        th(style="width: 200px;") TIMESTAMP
+                tbody#last-transactions

@@ -5,6 +5,7 @@ import {createDBConnection} from "../modules/postgres.js";
 import {GasAPI} from "./gas.js";
 import {CoinAPI} from "./coin.js";
 import {NftAPI} from "./nft.js";
+import {AddressesAPI} from "./addresses.js";
 
 const defaultIndexerOptions = {
     debug: true,
@@ -26,4 +27,4 @@ export class Archive {
     }
 }
 
-Object.assign(Archive.prototype, Postgres, TransactionsAPI, StatusAPI, GasAPI, CoinAPI, NftAPI)
+Object.assign(Archive.prototype, Postgres, TransactionsAPI, StatusAPI, GasAPI, CoinAPI, NftAPI, AddressesAPI)

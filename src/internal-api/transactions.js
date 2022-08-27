@@ -1,7 +1,7 @@
 import {query} from "../modules/postgres.js";
 
 export const TransactionsAPI = {
-    transactions: async ({order = "1 desc", limit, offset}) => {
+    transactions: async ({order = "timestamp", limit = 25, start = 0}) => {
         const sql = `
             select *
             from v_transactions
@@ -9,10 +9,10 @@ export const TransactionsAPI = {
             limit $1 offset $2
         `.replace("'%ORDER%'", order)
 
-        return (await query(sql, [limit, offset])).rows
+        return (await query(sql, [limit, start])).rows
     },
 
-    userTransactions: async ({order = "1 desc", limit, offset}) => {
+    userTransactions: async ({order = "timestamp", limit = 25, start = 0}) => {
         const sql = `
             select *
             from v_transactions vt
@@ -22,10 +22,10 @@ export const TransactionsAPI = {
             limit $1 offset $2
         `.replace("'%ORDER%'", order)
 
-        return (await query(sql, [limit, offset])).rows
+        return (await query(sql, [limit, start])).rows
     },
 
-    metaTransactions: async ({order = "1 desc", limit, offset}) => {
+    metaTransactions: async ({order = "timestamp", limit = 25, start = 0}) => {
         const sql = `
             select *
             from v_transactions vt
@@ -35,7 +35,20 @@ export const TransactionsAPI = {
             limit $1 offset $2
         `.replace("'%ORDER%'", order)
 
-        return (await query(sql, [limit, offset])).rows
+        return (await query(sql, [limit, start])).rows
+    },
+
+    stateTransactions: async ({order = "timestamp", limit = 25, start = 0}) => {
+        const sql = `
+            select *
+            from v_transactions vt
+              left join state_transactions mt on vt.id = mt.id 
+            where type::text = 'state'
+            order by '%ORDER%'
+            limit $1 offset $2
+        `.replace("'%ORDER%'", order)
+
+        return (await query(sql, [limit, start])).rows
     },
 
     genesis: async () => {

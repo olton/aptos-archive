@@ -1,5 +1,6 @@
 import {connect} from "./websocket.js";
 
+globalThis.trans_records = 25
 globalThis.darkMode = $.dark
 
 const storedDarkMode = Metro.storage.getItem("darkMode")
@@ -24,5 +25,11 @@ $(".light-mode-switch, .dark-mode-switch").on("click", () => {
 $("#reload_last_transactions").on("click", function() {
     globalThis.autoReloadLastTransactions = this.checked
 })
+
+$(".trans_records").on("click", function() {
+    globalThis.trans_records = $(this).find("input").val()
+})
+
+
 
 connect()

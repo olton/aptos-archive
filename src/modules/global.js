@@ -1,7 +1,7 @@
 import path from "path";
 import {fileURLToPath} from "url";
 import {readJson} from "../helpers/readers.js";
-import {Archive} from "../api/index.js";
+import {Archive} from "../internal-api/index.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 

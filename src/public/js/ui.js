@@ -91,3 +91,7 @@ export const updateCollectionsCountPanel = data => {
 export const updateTokensCountPanel = data => {
     $("#tokens-count").html(data)
 }
+
+export const updateAddressesCountPanel = data => {
+    $("#addresses-count").html(data)
+}

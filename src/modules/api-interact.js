@@ -43,6 +43,11 @@ const saveTokensCount = async () => {
     setTimeout(saveTokensCount, 10_000)
 }
 
+const saveAddressesCount = async () => {
+    globalThis.addressesCount = await arch.addressesCount()
+    setTimeout(saveAddressesCount, 10_000)
+}
+
 export const Interact = {
     run(){
         setImmediate(saveLedger)
@@ -54,5 +59,6 @@ export const Interact = {
         setImmediate(saveLastTransactions)
         setImmediate(saveCollectionsCount)
         setImmediate(saveTokensCount)
+        setImmediate(saveAddressesCount)
     }
 }

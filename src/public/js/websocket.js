@@ -1,4 +1,5 @@
 import {
+    updateAddressesCountPanel,
     updateArchivePanel,
     updateCoinMintCountPanel,
     updateCoinTransferCountPanel, updateCollectionsCountPanel,
@@ -73,9 +74,12 @@ const wsMessageController = (ws, response) => {
             request('api::gas::count')
             request('api::coin::transfer')
             request('api::coin::mint')
-            request('api::transactions::last')
+            request('api::transactions::last', {
+                limit: globalThis.trans_records
+            })
             request('api::collections::count')
             request('api::tokens::count')
+            request('api::addresses::count')
             break
         }
         case 'api::ledger': {
@@ -111,7 +115,9 @@ const wsMessageController = (ws, response) => {
         }
         case 'api::transactions::last': {
             if (globalThis.autoReloadLastTransactions) updateLastTransactionsPanel(data)
-            setTimeout(request, 1000, channel)
+            setTimeout(request, 1000, channel, {
+                limit: globalThis.trans_records
+            })
             break
         }
         case 'api::collections::count': {
@@ -121,6 +127,11 @@ const wsMessageController = (ws, response) => {
         }
         case 'api::tokens::count': {
             updateTokensCountPanel(data)
+            setTimeout(request, 1000, channel)
+            break
+        }
+        case 'api::addresses::count': {
+            updateAddressesCountPanel(data)
             setTimeout(request, 1000, channel)
             break
         }

@@ -72,6 +72,11 @@ td,
 .ledger-table td:last-child {
   text-align: right;
 }
+.tool-panel {
+  padding: 8px 4px;
+  background: #fff;
+  color: var(--color-value);
+}
 html.dark-mode {
   --body-background: #1e2228;
   --color-text: #adbaa9;
@@ -132,5 +137,19 @@ html.dark-mode .table * {
 }
 html.dark-mode .table thead th {
   color: #fff;
+}
+html.dark-mode ul.tabs-list {
+  background-color: #22272e !important;
+}
+html.dark-mode ul.tabs-list li {
+  background-color: #22272e !important;
+  color: #fff;
+}
+html.dark-mode ul.tabs-list li.active {
+  background-color: #444c56 !important;
+}
+html.dark-mode .tool-panel {
+  background: #22272e;
+  color: var(--color-accent);
 }
 /*# sourceMappingURL=index.css.map */

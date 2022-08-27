@@ -113,40 +113,78 @@ export const broadcast = (data) => {
 
 const router = async (ws, channel, data) => {
     switch (channel) {
-        case "api::ledger": {
-            response(ws, channel, globalThis.ledger)
-            break
-        }
-        case "api::archive": {
-            response(ws, channel, globalThis.archive)
-            break
-        }
-        case "api::transactions::count": {
-            response(ws, channel, globalThis.counters)
-            break
-        }
-        case "api::gas::count": {
-            response(ws, channel, globalThis.gasCount)
-            break
-        }
-        case "api::coin::transfer": {
-            response(ws, channel, globalThis.coinTransfer)
-            break
-        }
-        case "api::coin::mint": {
-            response(ws, channel, globalThis.coinMint)
-            break
-        }
+        case "api::ledger": {response(ws, channel, globalThis.ledger);break}
+        case "api::archive": {response(ws, channel, globalThis.archive);break}
+        case "api::transactions::count": {response(ws, channel, globalThis.counters);break}
+        case "api::gas::count": {response(ws, channel, globalThis.gasCount);break}
+        case "api::coin::transfer": {response(ws, channel, globalThis.coinTransfer);break}
+        case "api::coin::mint": {response(ws, channel, globalThis.coinMint);break}
         case "api::transactions::last": {
-            response(ws, channel, globalThis.lastTransactions)
+            const transactions = await arch.transactions({order: "version::bigint desc", limit: data.limit, offset: 0})
+            response(ws, channel, transactions)
             break
         }
-        case "api::collections::count": {
-            response(ws, channel, globalThis.collectionsCount)
+        case "api::collections::count": {response(ws, channel, globalThis.collectionsCount);break}
+        case "api::tokens::count": {response(ws, channel, globalThis.tokensCount);break}
+        case "api::addresses::count": {response(ws, channel, globalThis.addressesCount);break}
+
+        case "api::transactions::list": {
+            try {
+                response(ws, channel, await arch.transactions({
+                    order: data.order,
+                    limit: data.limit,
+                    start: data.start
+                }))
+            } catch (e) {
+                response(ws, channel, {
+                    error: e.message
+                })
+            }
             break
         }
-        case "api::tokens::count": {
-            response(ws, channel, globalThis.tokensCount)
+
+        case "api::transactions::user": {
+            try {
+                response(ws, channel, await arch.user_transactions({
+                    order: data.order,
+                    limit: data.limit,
+                    start: data.start
+                }))
+            } catch (e) {
+                response(ws, channel, {
+                    error: e.message
+                })
+            }
+            break
+        }
+
+        case "api::transactions::meta": {
+            try {
+                response(ws, channel, await arch.meta_transactions({
+                    order: data.order,
+                    limit: data.limit,
+                    start: data.start
+                }))
+            } catch (e) {
+                response(ws, channel, {
+                    error: e.message
+                })
+            }
+            break
+        }
+
+        case "api::transactions::state": {
+            try {
+                response(ws, channel, await arch.state_transactions({
+                    order: data.order,
+                    limit: data.limit,
+                    start: data.start
+                }))
+            } catch (e) {
+                response(ws, channel, {
+                    error: e.message
+                })
+            }
             break
         }
     }
