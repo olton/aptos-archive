@@ -14,7 +14,7 @@ const createPool = (conn) => {
         password,
         port,
         allowExitOnIdle: true,
-        max: 25,
+        max: 3000,
     })
 
     pool.on('error', (err, client) => {

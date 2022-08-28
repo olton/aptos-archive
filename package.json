@@ -1,6 +1,6 @@
 {
   "name": "@olton/aptos-archive",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "main": "src/index",
   "type": "module",
   "scripts": {

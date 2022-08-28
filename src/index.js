@@ -7,8 +7,6 @@ import {startArchiveProcess, updateLedgerStatus} from "./modules/archive.js";
 import {getArguments} from "./helpers/get-arguments.js";
 import {Interact} from "./modules/api-interact.js";
 
-
-
 const batch_size = 100
 
 const args = getArguments()

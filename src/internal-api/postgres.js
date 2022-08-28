@@ -14,8 +14,8 @@ export const Postgres = {
             database,
             password,
             port,
-            max,
-            allowExitOnIdle,
+            max: 3000,
+            allowExitOnIdle: true,
             connectionTimeoutMillis,
             idleTimeoutMillis
         })
