@@ -1,4 +1,4 @@
-create view v_transfer_coin(id, sender, receiver, amount, timestamp) as
+create view v_mint_coin(id, sender, receiver, amount, timestamp) as
 SELECT pl.id,
        ut.sender,
        replace(pl.arguments[0]::text, '"'::text, ''::text) AS receiver,
@@ -7,10 +7,15 @@ SELECT pl.id,
 FROM payloads pl
          LEFT JOIN user_transactions ut ON ut.id = pl.id
          LEFT JOIN transactions t ON pl.id = t.id
-WHERE pl.function::text ~~ '%::coin::transfer'::text
+WHERE pl.function::text ~~ '0x1::aptos_coin::mint'::text
   AND t.success = true;
 
-create view v_transfer_coin_all(id, sender, receiver, amount, timestamp) as
+alter table v_mint_coin
+    owner to archivarius;
+
+grant select on v_mint_coin to archive_guest;
+
+create view v_mint_coin_all(id, sender, receiver, amount, timestamp) as
 SELECT pl.id,
        ut.sender,
        replace(pl.arguments[0]::text, '"'::text, ''::text) AS receiver,
@@ -19,7 +24,12 @@ SELECT pl.id,
 FROM payloads pl
          LEFT JOIN user_transactions ut ON ut.id = pl.id
          LEFT JOIN transactions t ON pl.id = t.id
-WHERE pl.function::text ~~ '%::coin::transfer'::text;
+WHERE pl.function::text ~~ '0x1::aptos_coin::mint'::text;
+
+alter table v_mint_coin_all
+    owner to archivarius;
+
+grant select on v_mint_coin_all to archive_guest;
 
 create view v_transactions
             (id, type, version, hash, success, vm_status, timestamp, gas_used, payload, events, changes) as
@@ -36,7 +46,12 @@ SELECT t.id,
        t.changes
 FROM transactions t;
 
-create view v_mint_coin(id, sender, receiver, amount, timestamp) as
+alter table v_transactions
+    owner to archivarius;
+
+grant select on v_transactions to archive_guest;
+
+create view v_transfer_coin(id, sender, receiver, amount, timestamp) as
 SELECT pl.id,
        ut.sender,
        replace(pl.arguments[0]::text, '"'::text, ''::text) AS receiver,
@@ -45,10 +60,15 @@ SELECT pl.id,
 FROM payloads pl
          LEFT JOIN user_transactions ut ON ut.id = pl.id
          LEFT JOIN transactions t ON pl.id = t.id
-WHERE pl.function::text ~~ '0x1::aptos_coin::mint'::text
-AND t.success = true;
+WHERE pl.function::text ~~ '%::coin::transfer'::text
+  AND t.success = true;
 
-create view v_mint_coin_all(id, sender, receiver, amount, timestamp) as
+alter table v_transfer_coin
+    owner to archivarius;
+
+grant select on v_transfer_coin to archive_guest;
+
+create view v_transfer_coin_all(id, sender, receiver, amount, timestamp) as
 SELECT pl.id,
        ut.sender,
        replace(pl.arguments[0]::text, '"'::text, ''::text) AS receiver,
@@ -57,6 +77,10 @@ SELECT pl.id,
 FROM payloads pl
          LEFT JOIN user_transactions ut ON ut.id = pl.id
          LEFT JOIN transactions t ON pl.id = t.id
-WHERE pl.function::text ~~ '0x1::aptos_coin::mint'::text;
+WHERE pl.function::text ~~ '%::coin::transfer'::text;
 
+alter table v_transfer_coin_all
+    owner to archivarius;
+
+grant select on v_transfer_coin_all to archive_guest;
 
