@@ -5,8 +5,9 @@ export const TransactionsAPI = {
         const sql = `
             select *
             from v_transactions
-            order by '%ORDER%'
-            limit $1 offset $2
+            where version >= $2
+            order by '%ORDER%'            
+            limit $1
         `.replace("'%ORDER%'", order)
 
         return (await query(sql, [limit, start])).rows
@@ -18,8 +19,9 @@ export const TransactionsAPI = {
             from v_transactions vt
               left join user_transactions ut on vt.id = ut.id 
             where type::text = 'user'
+            and version >= $2
             order by '%ORDER%'
-            limit $1 offset $2
+            limit $1 
         `.replace("'%ORDER%'", order)
 
         return (await query(sql, [limit, start])).rows
@@ -31,8 +33,9 @@ export const TransactionsAPI = {
             from v_transactions vt
               left join meta_transactions mt on vt.id = mt.id 
             where type::text = 'meta'
+            and version >= $2
             order by '%ORDER%'
-            limit $1 offset $2
+            limit $1
         `.replace("'%ORDER%'", order)
 
         return (await query(sql, [limit, start])).rows
@@ -44,8 +47,9 @@ export const TransactionsAPI = {
             from v_transactions vt
               left join state_transactions mt on vt.id = mt.id 
             where type::text = 'state'
+            and version >= $2
             order by '%ORDER%'
-            limit $1 offset $2
+            limit $1 
         `.replace("'%ORDER%'", order)
 
         return (await query(sql, [limit, start])).rows

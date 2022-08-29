@@ -120,7 +120,7 @@ const router = async (ws, channel, data) => {
         case "api::coin::transfer": {response(ws, channel, globalThis.coinTransfer);break}
         case "api::coin::mint": {response(ws, channel, globalThis.coinMint);break}
         case "api::transactions::last": {
-            const transactions = await arch.transactions({order: "version::bigint desc", limit: data.limit, offset: 0})
+            const transactions = await arch.transactions({order: "timestamp desc", limit: data.limit, offset: 0})
             response(ws, channel, transactions)
             break
         }
