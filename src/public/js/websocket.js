@@ -9,6 +9,7 @@ import {
     updateTransactionsCountPanel,
     updateTransactionsTotalPanel
 } from "./ui.js";
+import {drawTransactionsPerMinute} from "./graphs.js";
 
 globalThis.webSocket = null
 globalThis.ipData = await (await fetch('https://api.db-ip.com/v2/free/self')).json()
@@ -80,6 +81,10 @@ const wsMessageController = (ws, response) => {
             request('api::collections::count')
             request('api::tokens::count')
             request('api::addresses::count')
+            request('api::transactions::all-tpm')
+            request('api::transactions::user-tpm')
+            request('api::transactions::meta-tpm')
+            request('api::transactions::state-tpm')
             break
         }
         case 'api::ledger': {
@@ -133,6 +138,26 @@ const wsMessageController = (ws, response) => {
         case 'api::addresses::count': {
             updateAddressesCountPanel(data)
             setTimeout(request, 10_000, channel)
+            break
+        }
+        case "api::transactions::all-tpm": {
+            drawTransactionsPerMinute("#graph-all-tpm", data)
+            setTimeout(request, 1_000, channel)
+            break
+        }
+        case "api::transactions::user-tpm": {
+            drawTransactionsPerMinute("#graph-user-tpm", data, "#84f784")
+            setTimeout(request, 1_000, channel)
+            break
+        }
+        case "api::transactions::meta-tpm": {
+            drawTransactionsPerMinute("#graph-meta-tpm", data, "#f59f00")
+            setTimeout(request, 1_000, channel)
+            break
+        }
+        case "api::transactions::state-tpm": {
+            drawTransactionsPerMinute("#graph-state-tpm", data, "#d4d4d4")
+            setTimeout(request, 1_000, channel)
             break
         }
     }

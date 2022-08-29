@@ -71,5 +71,57 @@ export const TransactionsAPI = {
         `
 
         return (await query(sql)).rows
-    }
+    },
+
+    allTPM: async ()=>{
+        const sql = `
+            select 
+                date_trunc('minute', timestamp) as timestamp,
+                count(*)
+            from v_transactions
+            group by 1
+            order by 1 desc
+            limit 1000
+        `
+        return (await query(sql)).rows
+    },
+    userTPM: async ()=>{
+        const sql = `
+            select 
+                date_trunc('minute', timestamp) as timestamp,
+                count(*)
+            from v_transactions
+            where type::text = 'user'
+            group by 1
+            order by 1 desc
+            limit 1000
+        `
+        return (await query(sql)).rows
+    },
+    metaTPM: async ()=>{
+        const sql = `
+            select 
+                date_trunc('minute', timestamp) as timestamp,
+                count(*)
+            from v_transactions
+            where type::text = 'meta'
+            group by 1
+            order by 1 desc
+            limit 1000
+        `
+        return (await query(sql)).rows
+    },
+    stateTPM: async ()=>{
+        const sql = `
+            select 
+                date_trunc('minute', timestamp) as timestamp,
+                count(*)
+            from v_transactions
+            where type::text = 'state'
+            group by 1
+            order by 1 desc
+            limit 1000
+        `
+        return (await query(sql)).rows
+    },
 }

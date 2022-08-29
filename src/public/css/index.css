@@ -77,6 +77,12 @@ td,
   background: #fff;
   color: var(--color-value);
 }
+#graph-all-tpm,
+#graph-user-tpm,
+#graph-meta-tpm,
+#graph-state-tpm {
+  height: 120px;
+}
 html.dark-mode {
   --body-background: #1e2228;
   --color-text: #adbaa9;

@@ -187,5 +187,22 @@ const router = async (ws, channel, data) => {
             }
             break
         }
+
+        case "api::transactions::all-tpm": {
+            response(ws, channel, globalThis.allTPM)
+            break
+        }
+        case "api::transactions::user-tpm": {
+            response(ws, channel, globalThis.userTPM)
+            break
+        }
+        case "api::transactions::meta-tpm": {
+            response(ws, channel, globalThis.metaTPM)
+            break
+        }
+        case "api::transactions::state-tpm": {
+            response(ws, channel, globalThis.stateTPM)
+            break
+        }
     }
 }

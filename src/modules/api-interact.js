@@ -48,6 +48,26 @@ const saveAddressesCount = async () => {
     setTimeout(saveAddressesCount, 10_000)
 }
 
+const saveAllTPM = async () => {
+    globalThis.allTPM = await arch.allTPM()
+    setTimeout(saveAllTPM, 10_000)
+}
+
+const saveUserTPM = async () => {
+    globalThis.userTPM = await arch.userTPM()
+    setTimeout(saveUserTPM, 10_000)
+}
+
+const saveMetaTPM = async () => {
+    globalThis.metaTPM = await arch.metaTPM()
+    setTimeout(saveMetaTPM, 10_000)
+}
+
+const saveStateTPM = async () => {
+    globalThis.stateTPM = await arch.stateTPM()
+    setTimeout(saveStateTPM, 10_000)
+}
+
 export const Interact = {
     run(){
         setImmediate(saveLedger)
@@ -60,5 +80,9 @@ export const Interact = {
         setImmediate(saveCollectionsCount)
         setImmediate(saveTokensCount)
         setImmediate(saveAddressesCount)
+        setImmediate(saveAllTPM)
+        setImmediate(saveUserTPM)
+        setImmediate(saveMetaTPM)
+        setImmediate(saveStateTPM)
     }
 }

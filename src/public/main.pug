@@ -24,10 +24,62 @@ section.container-fluid
 
             div.cell-ld-12.cell-xl-4
                 include segments/collections-count
+
             div.cell-ld-12.cell-xl-4
                 include segments/tokens-count
+
             div.cell-ld-12.cell-xl-4
                 include segments/addresses-count
+
+            div.cell-12
+                div.row
+                    div.cell-md-3
+                        div.border.bd-system.w-100
+                            div.text-center.mt-1(title="All transactions per minute") ALL TPM
+                            div#graph-all-tpm
+                            div.min-max.d-flex.flex-align-center.flex-justify-center
+                                div.text-small.text-muted.mr-1 MIN
+                                div.text-bold.min-value
+                                div ...
+                                div.text-bold.max-value
+                                div.text-small.text-muted.ml-1 MAX
+
+
+                    div.cell-md-3
+                        div.border.bd-system.w-100
+                            div.text-center.mt-1(title="User transactions per minute") User TPM
+                            div#graph-user-tpm
+                            div.min-max.d-flex.flex-align-center.flex-justify-center
+                                div.text-small.text-muted.mr-1 MIN
+                                div.text-bold.min-value
+                                div ...
+                                div.text-bold.max-value
+                                div.text-small.text-muted.ml-1 MAX
+
+
+                    div.cell-md-3
+                        div.border.bd-system.w-100
+                            div.text-center.mt-1(title="Meta transactions per minute") Meta TPM
+                            div#graph-meta-tpm
+                            div.min-max.d-flex.flex-align-center.flex-justify-center
+                                div.text-small.text-muted.mr-1 MIN
+                                div.text-bold.min-value
+                                div ...
+                                div.text-bold.max-value
+                                div.text-small.text-muted.ml-1 MAX
+
+                    div.cell-md-3
+                        div.border.bd-system.w-100
+                            div.text-center.mt-1(title="State transactions per minute") State TPM
+                            div#graph-state-tpm
+                            div.min-max.d-flex.flex-align-center.flex-justify-center
+                                div.text-small.text-muted.mr-1 MIN
+                                div.text-bold.min-value
+                                div ...
+                                div.text-bold.max-value
+                                div.text-small.text-muted.ml-1 MAX
+
+
 
             div.cell-fs-12
                 include segments/transactions-last
