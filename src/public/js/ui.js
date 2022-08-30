@@ -84,7 +84,7 @@ export const updateCoinMintCountPanel = (data = {}) => {
     $("#mint-coin-avg").html(n2f(+coin_avg))
 
     if (globalThis.graph_mint_avg === null) {
-        globalThis.graph_mint_avg = drawAvgGraph("#graph-mint-avg", [], "#f59f00")
+        globalThis.graph_mint_avg = drawAvgGraph("#graph-mint-avg", [], "#e94c3b")
     }
 
     globalThis.graph_mint_avg.add(0, [datetime().time(), +coin_avg], true, false)
