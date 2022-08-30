@@ -80,7 +80,10 @@ td,
 #graph-all-tpm,
 #graph-user-tpm,
 #graph-meta-tpm,
-#graph-state-tpm {
+#graph-state-tpm,
+#graph-gas-avg,
+#graph-transfer-avg,
+#graph-mint-avg {
   height: 120px;
 }
 html.dark-mode {

@@ -22,6 +22,23 @@ section.container-fluid
             div.cell-md-12.cell-xxl-4
                 include segments/mint-coin
 
+            div.cell-12
+                div.row
+                    div.cell-ld-12.cell-md-4
+                        div.border.bd-system.w-100
+                            div.text-center.mt-1(title="Gas usage average") Gas AVG
+                            div#graph-gas-avg
+
+                    div.cell-ld-12.cell-md-4
+                        div.border.bd-system.w-100
+                            div.text-center.mt-1(title="Transfer coin Average") Transfer AVG
+                            div#graph-transfer-avg
+
+                    div.cell-ld-12.cell-md-4
+                        div.border.bd-system.w-100
+                            div.text-center.mt-1(title="Mint Average") Mint AVG
+                            div#graph-mint-avg
+
             div.cell-ld-12.cell-xl-4
                 include segments/collections-count
 
@@ -33,10 +50,12 @@ section.container-fluid
 
             div.cell-12
                 div.row
-                    div.cell-md-3
+                    div.cell-ld-12.cell-md-3
                         div.border.bd-system.w-100
                             div.text-center.mt-1(title="All transactions per minute") ALL TPM
                             div#graph-all-tpm
+                                div.h-100.d-flex.flex-align-center.flex-justify-center
+                                    div(data-role="activity" data-type="atom" data-style="color")
                             div.min-max.d-flex.flex-align-center.flex-justify-center
                                 div.text-small.text-muted.mr-1 MIN
                                 div.text-bold.min-value
@@ -45,10 +64,12 @@ section.container-fluid
                                 div.text-small.text-muted.ml-1 MAX
 
 
-                    div.cell-md-3
+                    div.cell-ld-12.cell-md-3
                         div.border.bd-system.w-100
                             div.text-center.mt-1(title="User transactions per minute") User TPM
                             div#graph-user-tpm
+                                div.h-100.d-flex.flex-align-center.flex-justify-center
+                                    div(data-role="activity" data-type="atom" data-style="color")
                             div.min-max.d-flex.flex-align-center.flex-justify-center
                                 div.text-small.text-muted.mr-1 MIN
                                 div.text-bold.min-value
@@ -57,10 +78,12 @@ section.container-fluid
                                 div.text-small.text-muted.ml-1 MAX
 
 
-                    div.cell-md-3
+                    div.cell-ld-12.cell-md-3
                         div.border.bd-system.w-100
                             div.text-center.mt-1(title="Meta transactions per minute") Meta TPM
                             div#graph-meta-tpm
+                                div.h-100.d-flex.flex-align-center.flex-justify-center
+                                    div(data-role="activity" data-type="atom" data-style="color")
                             div.min-max.d-flex.flex-align-center.flex-justify-center
                                 div.text-small.text-muted.mr-1 MIN
                                 div.text-bold.min-value
@@ -68,10 +91,12 @@ section.container-fluid
                                 div.text-bold.max-value
                                 div.text-small.text-muted.ml-1 MAX
 
-                    div.cell-md-3
+                    div.cell-ld-12.cell-md-3
                         div.border.bd-system.w-100
                             div.text-center.mt-1(title="State transactions per minute") State TPM
                             div#graph-state-tpm
+                                div.h-100.d-flex.flex-align-center.flex-justify-center
+                                    div(data-role="activity" data-type="atom" data-style="color")
                             div.min-max.d-flex.flex-align-center.flex-justify-center
                                 div.text-small.text-muted.mr-1 MIN
                                 div.text-bold.min-value

@@ -1,4 +1,5 @@
 import {n2f} from "./utils.js";
+import {drawAvgGraph} from "./graphs.js";
 
 export const updateLedgerPanel = (data) => {
     if (typeof data.chain_id === 'undefined') return
@@ -43,6 +44,12 @@ export const updateGasCountPanel = (data = []) => {
     $("#gas-coin-max").html(n2f(+coin_max))
     $("#gas-coin-min").html(n2f(+coin_min))
     $("#gas-coin-avg").html(n2f(+coin_avg))
+
+    if (globalThis.graph_gas_avg === null) {
+        globalThis.graph_gas_avg = drawAvgGraph("#graph-gas-avg", [])
+    }
+
+    globalThis.graph_gas_avg.add(0, [datetime().time(), +coin_avg], true, false)
 }
 
 export const updateArchivePanel = (data = {}) => {
@@ -59,6 +66,13 @@ export const updateCoinTransferCountPanel = (data = {}) => {
     $("#transfer-coin-max").html(n2f(+coin_max))
     $("#transfer-coin-min").html(n2f(+coin_min))
     $("#transfer-coin-avg").html(n2f(+coin_avg))
+
+    if (globalThis.graph_transfer_avg === null) {
+        globalThis.graph_transfer_avg = drawAvgGraph("#graph-transfer-avg", [], "#60a917")
+    }
+
+    globalThis.graph_transfer_avg.add(0, [datetime().time(), +coin_avg], true, false)
+
 }
 
 export const updateCoinMintCountPanel = (data = {}) => {
@@ -68,6 +82,12 @@ export const updateCoinMintCountPanel = (data = {}) => {
     $("#mint-coin-max").html(n2f(+coin_max))
     $("#mint-coin-min").html(n2f(+coin_min))
     $("#mint-coin-avg").html(n2f(+coin_avg))
+
+    if (globalThis.graph_mint_avg === null) {
+        globalThis.graph_mint_avg = drawAvgGraph("#graph-mint-avg", [], "#f59f00")
+    }
+
+    globalThis.graph_mint_avg.add(0, [datetime().time(), +coin_avg], true, false)
 }
 
 export const updateLastTransactionsPanel = (data) => {
