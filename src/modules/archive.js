@@ -53,13 +53,16 @@ export const getLastVersion = async () => {
     }
 }
 
-export const setLastVersion = async (version) => {
+export const setLastVersion = async (ver) => {
     const sql = `
         update archive_status
         set version = $1, timestamp = current_timestamp where true
     `
-
-    return (await query(sql, [version]))
+    try {
+        return (await query(sql, [ver]))
+    } catch (e) {
+        throw new Error("setLastVersion --> " + e.message)
+    }
 }
 
 export const saveTransaction = async (data) => {
