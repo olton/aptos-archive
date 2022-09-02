@@ -7,9 +7,13 @@ import {startArchiveProcess, updateLedgerStatus} from "./modules/archive.js";
 import {getArguments} from "./helpers/get-arguments.js";
 import {Interact} from "./modules/api-interact.js";
 
-const batch_size = 100
+let batch_size = 100
 
 const args = getArguments()
+
+if (args.batch && !isNaN(args.batch) && args.batch > 0) {
+   batch_size = args.batch
+}
 
 const runProcesses = () => {
     if (!args.web) setImmediate( updateLedgerStatus )
