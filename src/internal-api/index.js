@@ -8,7 +8,7 @@ import {AddressesAPI} from "./addresses.js";
 
 const defaultDBOptions = {
     debug: true,
-    max: 2000,
+    max: 3000,
     allowExitOnIdle: true,
     idleTimeoutMillis: 1_000,
     connectionTimeoutMillis: 0
@@ -16,10 +16,7 @@ const defaultDBOptions = {
 
 export class Archive {
     constructor({proto = 'http', host = 'localhost', port = 5432, user, password, database, options = {}}) {
-        this.connect = {
-            proto, host, port, user, password, database,
-            allowExitOnIdle: true, max: 3000
-        }
+        this.connect = {proto, host, port, user, password, database}
         this.options = Object.assign({}, defaultDBOptions, options)
 
         createDBConnection(this.connect, this.options)

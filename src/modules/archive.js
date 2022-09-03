@@ -223,7 +223,7 @@ export const saveEvents = async (id, data) => {
     }
 }
 
-export const getPack = async (limit = 100, start = 0) => {
+export const getBlock = async (limit = 100, start = 0) => {
     const response = await aptos.getTransactions({limit, start})
     if (!response.ok) {
         throw new Error(response.message)
@@ -231,7 +231,7 @@ export const getPack = async (limit = 100, start = 0) => {
     return response.payload
 }
 
-export const savePack = async (data, start) => {
+export const saveBlock = async (data, start) => {
     let index = start
 
     data = cleanObj(data)
@@ -264,11 +264,12 @@ export const startArchiveProcess = async (batch_size = 100) => {
         await startArchiveProcess(batch_size)
     }
 
-    const pack = await getPack(batch_size, +start.version)
+    const startFrom = +start.version + 1
+    const block = await getBlock(batch_size, startFrom)
 
     try {
         await query("BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED")
-        await savePack(pack, start.version)
+        await saveBlock(block, startFrom)
         await query("COMMIT")
         await sleep(100)
         await startArchiveProcess(batch_size)
