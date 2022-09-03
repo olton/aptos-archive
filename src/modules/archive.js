@@ -239,8 +239,12 @@ export const savePack = async (data, start) => {
     try {
         for (let t of data) {
             const id = await saveTransaction(t)
-            if (t.type === 'user_transaction') await saveUserTransaction(id, t)
-            if (t.type === 'block_metadata_transaction') await saveMetaTransaction(id, t)
+            if (t.type === 'user_transaction') {
+                await saveUserTransaction(id, t)
+            }
+            if (t.type === 'block_metadata_transaction') {
+                await saveMetaTransaction(id, t)
+            }
             index++
         }
         await setLastVersion(index)
@@ -266,7 +270,7 @@ export const startArchiveProcess = async (batch_size = 100) => {
         await query("BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED")
         await savePack(pack, start.version)
         await query("COMMIT")
-        await sleep(100)
+        // await sleep(100)
         await startArchiveProcess(batch_size)
     } catch (e) {
         await query("ROLLBACK")
