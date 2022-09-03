@@ -270,7 +270,7 @@ export const startArchiveProcess = async (batch_size = 100) => {
         await query("BEGIN TRANSACTION ISOLATION LEVEL READ COMMITTED")
         await savePack(pack, start.version)
         await query("COMMIT")
-        // await sleep(100)
+        await sleep(100)
         await startArchiveProcess(batch_size)
     } catch (e) {
         await query("ROLLBACK")
