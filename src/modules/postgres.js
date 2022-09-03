@@ -4,7 +4,7 @@ import {datetime} from "@olton/datetime"
 
 const { Pool } = pg
 
-const createPool = (conn) => {
+const createPool = (conn, opt) => {
     const {host, port, user, database, password} = conn ?? config.db
 
     const pool = new Pool({
@@ -13,8 +13,7 @@ const createPool = (conn) => {
         database,
         password,
         port,
-        allowExitOnIdle: true,
-        max: 3000,
+        ...opt
     })
 
     pool.on('error', (err, client) => {
@@ -25,8 +24,8 @@ const createPool = (conn) => {
     return pool
 }
 
-export const createDBConnection = async (conn) => {
-    globalThis.postgres = createPool(conn)
+export const createDBConnection = async (conn, opt) => {
+    globalThis.postgres = createPool(conn, opt)
 
     const pool = globalThis.postgres
 

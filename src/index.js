@@ -49,7 +49,7 @@ export const run = async () => {
             }
         })
 
-        await createDBConnection()
+        // await createDBConnection()
         runProcesses()
         runWebServer()
 

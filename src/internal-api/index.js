@@ -1,4 +1,3 @@
-import {Postgres} from "./postgres.js";
 import {TransactionsAPI} from "./transactions.js";
 import {StatusAPI} from "./status.js";
 import {createDBConnection} from "../modules/postgres.js";
@@ -7,11 +6,11 @@ import {CoinAPI} from "./coin.js";
 import {NftAPI} from "./nft.js";
 import {AddressesAPI} from "./addresses.js";
 
-const defaultIndexerOptions = {
+const defaultDBOptions = {
     debug: true,
-    max: 20,
+    max: 2000,
     allowExitOnIdle: true,
-    idleTimeoutMillis: 10_000,
+    idleTimeoutMillis: 1_000,
     connectionTimeoutMillis: 0
 }
 
@@ -19,12 +18,12 @@ export class Archive {
     constructor({proto = 'http', host = 'localhost', port = 5432, user, password, database, options = {}}) {
         this.connect = {
             proto, host, port, user, password, database,
-            allowExitOnIdle: true, max: 30
+            allowExitOnIdle: true, max: 3000
         }
-        this.options = Object.assign({}, defaultIndexerOptions, options)
+        this.options = Object.assign({}, defaultDBOptions, options)
 
-        createDBConnection(this.connect)
+        createDBConnection(this.connect, this.options)
     }
 }
 
-Object.assign(Archive.prototype, Postgres, TransactionsAPI, StatusAPI, GasAPI, CoinAPI, NftAPI, AddressesAPI)
+Object.assign(Archive.prototype, TransactionsAPI, StatusAPI, GasAPI, CoinAPI, NftAPI, AddressesAPI)
